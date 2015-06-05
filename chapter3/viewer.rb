@@ -6,9 +6,8 @@ require 'config'
 require 'open-uri'
 
 configure do
-  conn = Mongo::Connection.new(DATABASE_HOST, DATABASE_PORT)
-  db = conn[DATABASE_NAME]
-  TWEETS = db[COLLECTION_NAME]
+  client = Mongo::Client.new(["#{DATABASE_HOST}:#{DATABASE_PORT}"], :database => DATABASE_NAME)
+  TWEETS = client[COLLECTION_NAME]
 end
 
 get '/' do

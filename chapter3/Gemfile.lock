@@ -51,3 +51,6 @@ DEPENDENCIES
   mongo (= 1.9.2)
   sinatra (= 1.4.4)
   twitter (= 5.8.0)
+
+BUNDLED WITH
+   1.10.3

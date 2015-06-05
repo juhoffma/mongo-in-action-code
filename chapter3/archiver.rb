@@ -1,5 +1,5 @@
 $LOAD_PATH << File.dirname(__FILE__)
-require 'rubygems' 
+require 'rubygems'
 require 'mongo'
 require 'twitter'
 require 'config'
@@ -8,10 +8,14 @@ class TweetArchiver
 
   # Create a new instance of TweetArchiver
   def initialize(tag)
-    connection = Mongo::Connection.new(DATABASE_HOST, DATABASE_PORT)
-    db         = connection[DATABASE_NAME]
-    @tweets    = db[COLLECTION_NAME]
-    @tweets.ensure_index([['tags', 1], ['id', -1]])
+    client = Mongo::Client.new(["#{DATABASE_HOST}:#{DATABASE_PORT}"], :database => DATABASE_NAME)
+
+    @tweets    = client[COLLECTION_NAME]
+    @tweets.indexes.drop_all
+    @tweets.indexes.create_many([
+      { :key => { tags: 1 }},
+      { :key => { id: -1 }}
+      ])
     @tag = tag
     @tweets_found = 0
 
@@ -40,7 +44,7 @@ class TweetArchiver
       tweet_doc = tweet.to_h
       tweet_doc[:tags] = term
       tweet_doc[:_id] = tweet_doc[:id]
-      @tweets.save(tweet_doc)
+      @tweets.insert_one(tweet_doc)
     end
   end
 end
