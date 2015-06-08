@@ -9,7 +9,6 @@ class TweetArchiver
   # Create a new instance of TweetArchiver
   def initialize(tag)
     client = Mongo::Client.new(["#{DATABASE_HOST}:#{DATABASE_PORT}"], :database => DATABASE_NAME)
-
     @tweets    = client[COLLECTION_NAME]
     @tweets.indexes.drop_all
     @tweets.indexes.create_many([
